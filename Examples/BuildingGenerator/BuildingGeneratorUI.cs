@@ -8,7 +8,7 @@ namespace ProceduralToolkit.Examples.UI
         public MeshFilter buildingMeshFilter;
         public MeshFilter platformMeshFilter;
         public RectTransform leftPanel;
-        [Space]
+        [Space(10)]
         [Range(minWidth, maxWidth)]
         public int width = 15;
         [Range(minLength, maxLength)]

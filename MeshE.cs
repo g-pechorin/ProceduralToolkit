@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
 namespace ProceduralToolkit
 {
@@ -63,12 +64,66 @@ namespace ProceduralToolkit
             }
             mesh.vertices = vertices;
             mesh.normals = normals;
-        }
+		}
 
-        /// <summary>
-        /// Paints mesh vertices with <paramref name="color"/>
-        /// </summary>
-        public static void Paint(this Mesh mesh, Color color)
+#if UNITY_5_1_4
+		public static void SetColors(this Mesh mesh, List<Color> colors)
+		{
+			mesh.colors = colors.ToArray();
+		}
+
+		public static void SetNormals(this Mesh mesh, List<Vector3> normals)
+		{
+			mesh.normals = normals.ToArray();
+		}
+
+		public static void SetTangents(this Mesh mesh, List<Vector4> tangents)
+		{
+			mesh.tangents = tangents.ToArray();
+		}
+
+		public static void SetTriangles(this Mesh mesh, List<int> triangles, int subLayer)
+		{
+			if (0 != subLayer)
+				throw new UnityException();
+
+			mesh.triangles = triangles.ToArray();
+		}
+
+		public static void SetUVs(this Mesh mesh, int layer, List<Vector2> uv)
+		{
+			var array = uv.ToArray();
+
+			// ick ...
+			switch (layer)
+			{
+				case 0:
+					mesh.uv = array;
+					return;
+				case 1:
+					mesh.uv2 = array;
+					return;
+				case 2:
+					mesh.uv3 = array;
+					return;
+				case 3:
+					mesh.uv4 = array;
+					return;
+				default:
+					throw new UnityException();
+			}
+		}
+
+		public static void SetVertices(this Mesh mesh, List<Vector3> vertices)
+		{
+			mesh.vertices = vertices.ToArray();
+		}
+#endif
+
+		/// <summary>
+		/// Paints mesh vertices with <paramref name="color"/>
+		/// </summary>
+		public static void Paint(this Mesh mesh, Color color)
         {
             var colors = new Color[mesh.vertexCount];
             for (int i = 0; i < mesh.vertexCount; i++)

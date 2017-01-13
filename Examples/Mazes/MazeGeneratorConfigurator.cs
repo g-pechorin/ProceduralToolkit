@@ -10,7 +10,7 @@ namespace ProceduralToolkit.Examples.UI
         public ToggleGroup algorithmsGroup;
         public RawImage mazeImage;
         public Image background;
-        [Space]
+        [Space(10)]
         public MazeGenerator.Config config = new MazeGenerator.Config();
         public bool useGradient = true;
 

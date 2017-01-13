@@ -11,7 +11,7 @@ namespace ProceduralToolkit.Examples
         public ToggleGroup toggleGroup;
         public RawImage image;
         public Image background;
-        [Space]
+        [Space(10)]
         public CellularAutomaton.Config config = new CellularAutomaton.Config();
 
         private const float backgroundSaturation = 0.25f;

@@ -8,7 +8,7 @@ namespace ProceduralToolkit.Examples.UI
         public MeshFilter chairMeshFilter;
         public MeshFilter platformMeshFilter;
         public RectTransform leftPanel;
-        [Space]
+        [Space(10)]
         public ChairGenerator.Config config = new ChairGenerator.Config();
 
         private const float minLegWidth = 0.05f;

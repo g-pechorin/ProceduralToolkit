@@ -107,9 +107,13 @@ namespace ProceduralToolkit
         /// Constructs a new ColorHSV from a Color
         /// </summary>
         public ColorHSV(Color color)
-        {
-            Color.RGBToHSV(color, out h, out s, out v);
-            a = color.a;
+		{
+#if UNITY_5_1_4
+			UnityEditor.EditorGUIUtility.RGBToHSV(color, out h, out s, out v);
+#else
+			Color.RGBToHSV(color, out h, out s, out v);
+#endif
+			a = color.a;
         }
 
         public static explicit operator Vector4(ColorHSV c)
@@ -159,8 +163,12 @@ namespace ProceduralToolkit
         /// </summary>
         public Color ToColor()
         {
+#if UNITY_5_1_4
+			var color = UnityEditor.EditorGUIUtility.HSVToRGB(h, s, v);
+#else
             var color = Color.HSVToRGB(h, s, v);
-            color.a = a;
+#endif
+			color.a = a;
             return color;
         }
 

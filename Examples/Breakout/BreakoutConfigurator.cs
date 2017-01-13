@@ -6,7 +6,7 @@ namespace ProceduralToolkit.Examples.UI
     {
         public Camera mainCamera;
         public RectTransform leftPanel;
-        [Space]
+        [Space(10)]
         public Breakout.Config config = new Breakout.Config();
 
         private Breakout breakout;
