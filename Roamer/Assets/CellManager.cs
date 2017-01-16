@@ -8,16 +8,16 @@ public class CellManager : MonoBehaviour
 
 	public GameObject[] subjects = new GameObject[0];
 
-	private Dictionary<TerrainMakeup.CellId, Cell> cells = new Dictionary<TerrainMakeup.CellId, Cell>();
+	private Dictionary<CellI2, Cell> cells = new Dictionary<CellI2, Cell>();
 
 	public TerrainMakeup terrainMakeup;
 
 	class Cell : MonoBehaviour
 	{
-		public TerrainMakeup.CellId cell;
+		public CellI2 cell;
 		CellManager parent;
 		public bool marked = true;
-		public void Mount(CellManager parent, TerrainMakeup.CellId cell)
+		public void Mount(CellManager parent, CellI2 cell)
 		{
 			this.cell = cell;
 			this.parent = parent;
@@ -26,7 +26,7 @@ public class CellManager : MonoBehaviour
 			transform.localPosition = cell.ToVector3(parent.span);
 
 			parent.cells[cell] = this;
-			
+
 			// create and attach the mesh
 			{
 				var mesh = parent.terrainMakeup.For(cell, parent.span);
@@ -74,7 +74,7 @@ public class CellManager : MonoBehaviour
 			cell.marked = false;
 
 		// locate all missing cells
-		var added = new HashSet<TerrainMakeup.CellId>();
+		var added = new HashSet<CellI2>();
 		foreach (var subject in subjects)
 		{
 			var offset = subject.transform.position - transform.position;
@@ -86,7 +86,7 @@ public class CellManager : MonoBehaviour
 					if ((reach * reach) < ((i * i) + (j * j)))
 						continue;
 
-					var cell = new TerrainMakeup.CellId(Mathf.FloorToInt(offset.x), Mathf.FloorToInt(offset.z)).Add(i, j);
+					var cell = new CellI2(Mathf.FloorToInt(offset.x), Mathf.FloorToInt(offset.z)).Add(i, j);
 
 
 					if (cells.ContainsKey(cell))

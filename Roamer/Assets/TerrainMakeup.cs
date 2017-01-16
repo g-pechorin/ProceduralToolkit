@@ -10,92 +10,9 @@ public class TerrainMakeup : ScriptableObject
 	public Material material = null;
 	public float height = 3.14f;
 
-	public class CellId
-	{
-		public int i { get; private set; }
-		public int j { get; private set; }
-
-		public CellId(int i, int j)
-		{
-			this.i = i;
-			this.j = j;
-		}
-
-		public CellId Add(int i, int j)
-		{
-			return new CellId(this.i + i, this.j + j);
-		}
-
-		public Vector3 ToVector3(float f)
-		{
-			return new Vector3(i * f, 0, j * f);
-		}
-
-		public override bool Equals(object obj)
-		{
-			var other = obj as CellId;
-
-			return null != other && ToString() == ("" + other);
-		}
 
 
-		public override int GetHashCode()
-		{
-			return ToString().GetHashCode();
-		}
-
-		public override string ToString()
-		{
-			return GetType().Name + "(" + (i > 0 ? "+" + i : "" + i) + "," + (j > 0 ? "+" + j : "" + j) + ")";
-		}
-	}
-
-	class MeshBuilder
-	{
-		List<Vector3> vertices = new List<Vector3>();
-		List<int> indices = new List<int>();
-
-		public void AddQuad(Vector3 v0, Vector3 v1, Vector3 v2, Vector3 v3)
-		{
-			AddTriangle(v0, v1, v2);
-			AddTriangle(v0, v2, v3);
-		}
-
-		public void AddTriangle(Vector3 v0, Vector3 v1, Vector3 v2)
-		{
-			addVertex(v0);
-			addVertex(v1);
-			addVertex(v2);
-		}
-
-		private void addVertex(Vector3 v)
-		{
-			var i = vertices.IndexOf(v);
-			if (-1 == i)
-			{
-				i = vertices.Count;
-				vertices.Add(v);
-			}
-			indices.Add(i);
-		}
-
-		public Mesh Produce(string name)
-		{
-			var mesh = new Mesh();
-
-			mesh.vertices = vertices.ToArray();
-			mesh.triangles = indices.ToArray();
-
-			mesh.RecalculateNormals();
-			//mesh.RecalculateBounds();
-
-			mesh.name = name;
-
-			return mesh;
-		}
-	}
-
-	public Mesh For(CellId cell, float span, bool offset = false)
+	public Mesh For(CellI2 cell, float span, bool offset = false)
 	{
 		var foot = (offset ? cell.ToVector3(span) : Vector3.zero) - (Vector3.one * 0.5f * span);
 
