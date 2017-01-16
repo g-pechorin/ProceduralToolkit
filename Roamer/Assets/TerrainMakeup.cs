@@ -8,30 +8,28 @@ using UnityEditor;
 public class TerrainMakeup : ScriptableObject
 {
 	public Material material = null;
-	public float height = 3.14f;
 
+	public float terrainHeight = 3.14f;
+	public Gradient terrainGradient;
 
+	TerrainMakeup()
+	{
+		terrainGradient = ProceduralToolkit.ColorE.Gradient(ProceduralToolkit.ColorE.navy32, ProceduralToolkit.ColorE.olive32);
+	}
 
 	public Mesh For(CellI2 cell, float span, bool offset = false)
 	{
-		var foot = (offset ? cell.ToVector3(span) : Vector3.zero) - (Vector3.one * 0.5f * span);
+		Vector2 noiseOffset = new Vector2(cell.i * span, cell.j * span);
 
-		var meshBuilder = new MeshBuilder();
+		var terrainDraft = ProceduralToolkit.Examples.LowPolyTerrainGenerator.TerrainDraft(new ProceduralToolkit.Examples.LowPolyTerrainGenerator.Config()
+		{
+			terrainSize = new Vector3(span, terrainHeight, span),
+			gradient = terrainGradient
+		}, noiseOffset);
 
-		// TODO ; do this in an "unscaled" manner
+		terrainDraft.Move(Vector3.one * -0.5f * span);
 
-		var y0 = (float)(new System.Random(cell.Add(0, 0).GetHashCode()).NextDouble() * height);
-		var y1 = (float)(new System.Random(cell.Add(0, 1).GetHashCode()).NextDouble() * height);
-		var y2 = (float)(new System.Random(cell.Add(1, 1).GetHashCode()).NextDouble() * height);
-		var y3 = (float)(new System.Random(cell.Add(1, 0).GetHashCode()).NextDouble() * height);
-
-		meshBuilder.AddQuad(
-			foot + new Vector3(0, y0, 0),
-			foot + new Vector3(0, y1, span),
-			foot + new Vector3(span, y2, span),
-			foot + new Vector3(span, y3, 0));
-
-		return meshBuilder.Produce(cell.ToString());
+		return terrainDraft.ToMesh();
 	}
 
 #if UNITY_EDITOR

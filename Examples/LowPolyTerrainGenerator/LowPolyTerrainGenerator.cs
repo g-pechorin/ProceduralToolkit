@@ -17,12 +17,15 @@ namespace ProceduralToolkit.Examples
             public float cellSize = 1;
             public float noiseScale = 5;
             public Gradient gradient;
+		}
+
+		public static MeshDraft TerrainDraft(Config config)
+		{
+			return TerrainDraft(config, new Vector2(Random.Range(0f, 100f), Random.Range(0f, 100f)));
         }
 
-        public static MeshDraft TerrainDraft(Config config)
+        public static MeshDraft TerrainDraft(Config config, Vector2 noiseOffset)
         {
-            var noiseOffset = new Vector2(Random.Range(0f, 100f), Random.Range(0f, 100f));
-
             int xSegments = Mathf.FloorToInt(config.terrainSize.x/config.cellSize);
             int zSegments = Mathf.FloorToInt(config.terrainSize.z/config.cellSize);
 

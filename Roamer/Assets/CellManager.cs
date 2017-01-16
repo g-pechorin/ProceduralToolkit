@@ -93,8 +93,7 @@ public class CellManager : MonoBehaviour
 						cells[cell].marked = true;
 					else
 						// create missing cells
-						if (!added.Contains(cell))
-						if (added.Add(cell))
+						if (!added.Contains(cell) && added.Add(cell))
 							new GameObject(cell.ToString()).AddComponent<Cell>().Mount(this, cell);
 				}
 		}
