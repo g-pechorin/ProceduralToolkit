@@ -1,21 +1,23 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class CellMonitor : MonoBehaviour
+public class CellManager : MonoBehaviour
 {
 	public float span = 19.83f;
 	public float reach = 3.14f;
 
 	public GameObject[] subjects = new GameObject[0];
 
-	private Dictionary<TerrainMakeup.CellId, Monitored> cells = new Dictionary<TerrainMakeup.CellId, Monitored>();
+	private Dictionary<TerrainMakeup.CellId, Cell> cells = new Dictionary<TerrainMakeup.CellId, Cell>();
 
-	class Monitored : MonoBehaviour
+	public TerrainMakeup terrainMakeup;
+
+	class Cell : MonoBehaviour
 	{
 		public TerrainMakeup.CellId cell;
-		CellMonitor parent;
+		CellManager parent;
 		public bool marked = true;
-		public void Mount(CellMonitor parent, TerrainMakeup.CellId cell)
+		public void Mount(CellManager parent, TerrainMakeup.CellId cell)
 		{
 			this.cell = cell;
 			this.parent = parent;
@@ -23,9 +25,25 @@ public class CellMonitor : MonoBehaviour
 			transform.parent = parent.transform;
 			transform.localPosition = cell.ToVector3(parent.span);
 
-			Debug.Log("TODO ; create a cell and terrain for " + cell);
-
 			parent.cells[cell] = this;
+			
+			// create and attach the mesh
+			{
+				var mesh = parent.terrainMakeup.For(cell, parent.span);
+				gameObject.AddComponent<MeshFilter>().mesh = mesh;
+				gameObject.AddComponent<MeshRenderer>().material = parent.terrainMakeup.material;
+				gameObject.AddComponent<Rigidbody>().isKinematic = true;
+			}
+		}
+
+		void OnDestroy()
+		{
+			Debug.Assert(this == parent.cells[cell]);
+			parent.cells.Remove(cell);
+
+			var mesh = gameObject.GetComponent<MeshFilter>().mesh;
+			if (null != mesh)
+				Destroy(mesh);
 		}
 
 #if UNITY_EDITOR
@@ -48,7 +66,7 @@ public class CellMonitor : MonoBehaviour
 		Debug.Assert(Vector3.zero == transform.localEulerAngles);
 		Debug.Assert(Vector3.one == transform.localScale);
 		Debug.Assert(Vector3.one == transform.lossyScale);
-		
+
 		Debug.Assert(0 < subjects.Length);
 
 		// unmark all cells
@@ -77,17 +95,14 @@ public class CellMonitor : MonoBehaviour
 						// create missing cells
 						if (!added.Contains(cell))
 						if (added.Add(cell))
-							new GameObject(cell.ToString()).AddComponent<Monitored>().Mount(this, cell);
+							new GameObject(cell.ToString()).AddComponent<Cell>().Mount(this, cell);
 				}
 		}
 
 		// remove any unneeded cells
-		foreach (var cell in new HashSet<Monitored>(cells.Values))
+		foreach (var cell in new HashSet<Cell>(cells.Values))
 			if (!cell.marked)
-			{
-				cells.Remove(cell.cell);
 				Destroy(cell.gameObject);
-			}
 	}
 
 #if UNITY_EDITOR
@@ -99,7 +114,7 @@ public class CellMonitor : MonoBehaviour
 	}
 	void OnDrawGizmosSelected()
 	{
-		foreach (var cell in GetComponentsInChildren<Monitored>())
+		foreach (var cell in GetComponentsInChildren<Cell>())
 		{
 			cell.OnDrawGizmosSelected();
 		}

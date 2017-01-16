@@ -266,7 +266,7 @@ GameObject:
   - 4: {fileID: 1891817138}
   - 114: {fileID: 1891817137}
   m_Layer: 0
-  m_Name: CellMonitor
+  m_Name: CellManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -288,6 +288,7 @@ MonoBehaviour:
   subjects:
   - {fileID: 325488346}
   - {fileID: 720858598}
+  terrainMakeup: {fileID: 11400000, guid: da87e6b23df85fd4986308582708c7e8, type: 2}
   debugAlwaysDrawGizmos: 1
 --- !u!4 &1891817138
 Transform:
